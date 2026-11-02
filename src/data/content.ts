@@ -5,10 +5,10 @@ import eventHero from "@/assets/image_10.webp";
 import guestCelebration from "@/assets/guest-celebration.jpg";
 import storyDetail from "@/assets/story-detail.jpg";
 import { VENUE } from "@/config/event";
-import storyMet from "@/assets/image_2.webp";
-import storyStruggles from "@/assets/image_2.webp";
-import storyYes from "@/assets/image_2.webp";
-import storyShemegelna from "@/assets/image_2.webp";
+import storyMet from "@/assets/image_24.webp";
+import storyStruggles from "@/assets/image_26.webp";
+import storyYes from "@/assets/image_18.webp";
+import storyShemegelna from "@/assets/image_19.webp";
 /* Every user-facing string below is an English key that is translated at render time. */
 
 export const SCHEDULE: { time: string; title: string; detail: string; icon: LucideIcon }[] = [
@@ -76,7 +76,7 @@ export const STORY_CHAPTERS = [
 
 export const ABOUT_COUPLE = [
   {
-    name: "Saron",
+    name: "",
     role: "The bride",
     text: "A warm heart, a joyful spirit, and a love for the little moments. Saron brings beauty to everyday life, and makes every gathering feel like home.",
     photoPosition: "object-right",
@@ -129,13 +129,3 @@ export const MAPS_SEARCH_URL =
   "https://www.google.com/maps/search/?api=1&query=Entoto+Park+Addis+Ababa";
 
 /** Photos for the auto-scrolling "Moments" strip. Add more entries to lengthen the loop. */
-export const MOMENT_PHOTOS = [
-  { src: couplePortrait, alt: "Amanuel and Saron walking in the garden", position: "object-left" },
-  { src: storyDetail, alt: "Wedding rings and stationery", position: "object-center" },
-  { src: guestCelebration, alt: "Friends celebrating together", position: "object-center" },
-  { src: eventHero, alt: "The wedding celebration at sunset", position: "object-center" },
-  { src: couplePortrait, alt: "Amanuel and Saron walking together", position: "object-right" },
-  { src: eventHero, alt: "Amanuel and Saron at their garden celebration", position: "object-left" },
-  { src: guestCelebration, alt: "Friends celebrating together", position: "object-right" },
-  { src: storyDetail, alt: "Wedding rings and burgundy stationery", position: "object-right" },
-] as const;

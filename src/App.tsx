@@ -2,7 +2,7 @@ import { MusicPlayer } from "@/components/controls/MusicPlayer";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import {
-  AboutCouple,
+ 
   CalendarSection,
   Countdown,
   FamilyInvitation,
@@ -32,7 +32,7 @@ export default function App() {
           <Countdown />
           <CalendarSection />
           <Schedule />
-          <AboutCouple />
+          
           <Story />
           <Films />
           <MomentsMarquee />

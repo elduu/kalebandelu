@@ -19,7 +19,7 @@ export function FamilyInvitation() {
           {t("Together with our families, we joyfully invite you to celebrate our marriage on")}{" "}
           <strong className="font-semibold text-foreground">{t("NOV 15, 2026")}</strong>.{" "}
           {t("The ceremony will be held at")}{" "}
-          <strong className="font-semibold text-foreground">{t("Repi Mulu wengel church")}</strong>,{" "}
+          <strong className="font-semibold text-foreground">{t("Repi Full Gospel church")}</strong>,{" "}
           {t("Addis Ababa")}.
         </p>
         <p className="mt-7 text-base leading-8 text-muted-foreground">

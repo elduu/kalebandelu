@@ -1,6 +1,6 @@
 import { ArrowDown } from "lucide-react";
 
-import eventHero from "@/assets/image_2.webp";
+import eventHero from "@/assets/image_20.webp";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/i18n/useLanguage";
 

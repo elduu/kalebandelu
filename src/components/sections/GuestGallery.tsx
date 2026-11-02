@@ -1,20 +1,96 @@
-import type { ChangeEvent } from "react";
-import { Camera, Upload } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Download, Images, Loader2, Send } from "lucide-react";
 
 import { SectionLabel } from "@/components/common/SectionLabel";
 import { Button } from "@/components/ui/button";
-import { useImagePreview } from "@/hooks/useImagePreview";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { useLanguage } from "@/i18n/useLanguage";
+import { apiUrl } from "@/lib/api";
+
+const BOT_URL = "https://t.me/KALEBANDELBETHEL_BOT";
+const PHOTOS_API = apiUrl("photos");
+
+type GuestPhoto = { id: string; url: string; sender: string };
+
+/** Accepts an array or { photos | data | images: [...] }, with items as strings or objects. */
+function normalizePhotos(payload: unknown): GuestPhoto[] {
+  const source = payload as any;
+  const list: unknown[] = Array.isArray(payload)
+    ? payload
+    : Array.isArray(source?.photos)
+      ? source.photos
+      : Array.isArray(source?.data)
+        ? source.data
+        : Array.isArray(source?.images)
+          ? source.images
+          : [];
+
+  return list
+    .map((item, index) => {
+      const url =
+        typeof item === "string"
+          ? item
+          : ((item as any)?.image_url ??
+            (item as any)?.url ??
+            (item as any)?.secure_url ??
+            (item as any)?.photo_url ??
+            (item as any)?.src ??
+            "");
+      const id = String((item as any)?.id ?? index);
+      const sender = String((item as any)?.sender ?? "").trim();
+      return { id, url: String(url), sender };
+    })
+    .filter((photo) => photo.url);
+}
+
+async function downloadPhoto(url: string, index: number) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("Download failed");
+    const blob = await response.blob();
+    const extension = blob.type.split("/")[1]?.replace("jpeg", "jpg") || "jpg";
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = objectUrl;
+    link.download = `wedding-photo-${index + 1}.${extension}`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(objectUrl);
+  } catch {
+    // If the image host blocks cross-origin fetch, fall back to opening the image.
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
+}
 
 export function GuestGallery() {
   const { t } = useLanguage();
-  const { preview, choose, clear } = useImagePreview();
+  const [open, setOpen] = useState(false);
+  const [photos, setPhotos] = useState<GuestPhoto[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
-  function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-    if (file) choose(file);
-    event.target.value = ""; // allow re-selecting the same file later
-  }
+  useEffect(() => {
+    if (!open) return;
+    const controller = new AbortController();
+
+    async function load() {
+      setLoading(true);
+      setError(false);
+      try {
+        const response = await fetch(PHOTOS_API, { signal: controller.signal });
+        if (!response.ok) throw new Error("Request failed");
+        setPhotos(normalizePhotos(await response.json()));
+      } catch (err) {
+        if ((err as Error).name !== "AbortError") setError(true);
+      } finally {
+        if (!controller.signal.aborted) setLoading(false);
+      }
+    }
+
+    load();
+    return () => controller.abort();
+  }, [open]);
 
   return (
     <section
@@ -36,56 +112,93 @@ export function GuestGallery() {
           </p>
         </div>
 
-        <div className="mt-10 grid min-h-72 grid-cols-2">
-          {preview ? (
-            <div className="relative col-span-2 overflow-hidden bg-secondary">
-              <img
-                src={preview.url}
-                alt={`${t("Guest upload preview")}: ${preview.name}`}
-                className="h-full w-full object-cover"
-              />
-              <span className="absolute bottom-3 left-3 bg-background/90 px-3 py-1 text-xs">
-                {t("Your preview")}
-              </span>
-            </div>
-          ) : (
-            <label
-              htmlFor="guest-photo"
-              className="col-span-2 flex cursor-pointer flex-col items-center justify-center border border-dashed border-primary/40 bg-secondary px-6 text-center transition hover:border-primary hover:bg-muted"
-            >
-              <span className="flex size-12 items-center justify-center rounded-full bg-wedding-band text-primary-foreground">
-                <Camera className="size-5" />
-              </span>
-              <span className="mt-4 font-display text-2xl text-primary">
-                {t("Add your memory")}
-              </span>
-              <span className="mt-1 text-xs text-muted-foreground">
-                {t("Choose a JPG, PNG, or WebP photo")}
-              </span>
-              <span className="mt-4 inline-flex items-center gap-2 text-[0.65rem] font-semibold uppercase tracking-normal text-primary">
-                <Upload className="size-3.5" />
-                {t("Select photo")}
-              </span>
-            </label>
-          )}
-          <input
-            id="guest-photo"
-            type="file"
-            accept="image/jpeg,image/png,image/webp"
-            onChange={handleFileChange}
-            className="sr-only"
-          />
-        </div>
+        <div className="mx-auto mt-12 max-w-md text-center">
+          <h3 className="font-display text-3xl text-primary">{t("Share your photos")}</h3>
+          <p className="mt-3 leading-7 text-muted-foreground">
+            {t(
+              "Tap the button and send your photos to our Telegram bot. They will appear in the gallery.",
+            )}
+          </p>
 
-        {preview && (
-          <div className="mt-5 flex justify-center">
-            <Button variant="outline" onClick={clear} className="rounded-none">
-              <Upload />
-              {t("Choose another photo")}
+          <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+            <Button asChild className="rounded-none">
+              <a href={BOT_URL} target="_blank" rel="noopener noreferrer">
+                <Send />
+                {t("Send photos on Telegram")}
+              </a>
+            </Button>
+            <Button variant="outline" className="rounded-none" onClick={() => setOpen(true)}>
+              <Images />
+              {t("View all photos")}
             </Button>
           </div>
-        )}
+        </div>
       </div>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent
+          closeLabel={t("Close photographs")}
+          className="max-h-[92svh] w-[calc(100%-2rem)] max-w-3xl overflow-y-auto bg-background p-4 pt-12"
+        >
+          <DialogTitle className="font-display text-2xl text-primary">
+            {t("Guest photographs")}
+          </DialogTitle>
+          <DialogDescription className="sr-only">
+            {t("Photos shared by guests through Telegram")}
+          </DialogDescription>
+
+          {loading && (
+            <div className="flex items-center justify-center gap-2 py-16 text-muted-foreground">
+              <Loader2 className="size-5 animate-spin" />
+              {t("Loading photos...")}
+            </div>
+          )}
+
+          {error && !loading && (
+            <p className="py-16 text-center text-muted-foreground">
+              {t("Could not load photos. Please try again later.")}
+            </p>
+          )}
+
+          {!loading && !error && photos.length === 0 && (
+            <p className="py-16 text-center text-muted-foreground">
+              {t("No photos have been shared yet.")}
+            </p>
+          )}
+
+          <div className="flex flex-col gap-8">
+            {photos.map((photo, index) => (
+              <figure key={`${photo.id}-${index}`} className="flex flex-col gap-3">
+                <img
+                  src={photo.url}
+                  alt={`${t("Guest photograph")} ${index + 1}`}
+                  loading="lazy"
+                  className="h-auto w-full object-contain"
+                />
+                <figcaption className="flex items-center justify-between gap-3">
+                  <p className="min-w-0 truncate text-sm text-muted-foreground">
+                    {photo.sender ? (
+                      <>
+                        {t("Shared by")}{" "}
+                        <span className="font-medium text-foreground">{photo.sender}</span>
+                      </>
+                    ) : null}
+                  </p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="shrink-0 rounded-none"
+                    onClick={() => downloadPhoto(photo.url, index)}
+                  >
+                    <Download />
+                    {t("Download")}
+                  </Button>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }

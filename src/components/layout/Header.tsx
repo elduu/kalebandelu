@@ -18,9 +18,9 @@ export function Header() {
         <a
           href="#welcome"
           className="min-w-0 font-display text-2xl tracking-normal"
-          aria-label={t("Amanuel and Saron, back to welcome")}
+          aria-label={t("Kaleb and Elbethel, back to welcome")}
         >
-          A <span className="mx-1 text-accent">&</span> S
+          K <span className="mx-1 text-accent">&</span> E
         </a>
 
         <nav className="hidden items-center gap-5 xl:flex" aria-label={t("Main navigation")}>

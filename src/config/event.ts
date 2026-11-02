@@ -21,7 +21,7 @@ export const VENUE = {
 } as const;
 
 /** Looping, user-initiated background music. Put the file in /public/audio. */
-export const MUSIC_URL = "/audio/celebration.mp3";
+export const MUSIC_URL = "/audio/music.m4a";
 
 /** Local-storage keys for visitor preferences. */
 export const STORAGE_KEYS = {

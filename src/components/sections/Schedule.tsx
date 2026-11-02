@@ -1,9 +1,46 @@
-import { ArrowUpRight, CalendarDays, MapPin } from "lucide-react";
+import { Cake, Camera, Church, Home, Utensils, type LucideIcon } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { MAPS_SEARCH_URL, SCHEDULE } from "@/data/content";
 import { useLanguage } from "@/i18n/useLanguage";
-import { downloadWeddingCalendar } from "@/lib/calendar";
+
+type ScheduleItem = {
+  time: string;
+  title: string;
+  detail: string;
+  icon: LucideIcon;
+};
+
+const SCHEDULE: ScheduleItem[] = [
+  {
+    time: "7:00",
+    title: "Morning Photo Session",
+    detail: "Groom and bride photo session at the hotel.",
+    icon: Camera,
+  },
+  {
+    time: "11:00",
+    title: "Lunch Program",
+    detail: "Lunch with guests at the groom’s and bride’s homes.",
+    icon: Utensils,
+  },
+  {
+    time: "2:00",
+    title: "Guests Gather",
+    detail: "Guests gather and move to the bride’s house.",
+    icon: Home,
+  },
+  {
+    time: "3:00",
+    title: "Church Ceremony",
+    detail: "The wedding ceremony at the church.",
+    icon: Church,
+  },
+  {
+    time: "6:00",
+    title: "Cake Ceremony & Photos",
+    detail: "Cake ceremony and photo session at the church.",
+    icon: Cake,
+  },
+];
 
 export function Schedule() {
   const { t } = useLanguage();
@@ -19,10 +56,7 @@ export function Schedule() {
           <h2 className="mt-1 text-3xl leading-tight sm:text-4xl">{t("Wedding Schedule")}</h2>
           <div className="mx-auto mt-3 h-px w-14 bg-accent" />
           <p className="mt-4 text-xs text-muted-foreground">
-            {t("Sunday")} · {t("Novmber, 2026")}
-          </p>
-          <p className="mt-1 text-[0.7rem] italic text-muted-foreground">
-            {t("")}
+            {t("Sunday")} · {t("November 15, 2026")}
           </p>
         </div>
 
@@ -50,33 +84,6 @@ export function Schedule() {
             </li>
           ))}
         </ol>
-
-        <div className="mt-7 border-t border-accent/20 pt-4 text-center">
-          {/* <p className="text-xs leading-5 text-muted-foreground">
-            {t("The Garden at Entoto · Addis Ababa")}
-          </p> */}
-          {/* <div className="mt-2 flex flex-wrap justify-center gap-x-5 gap-y-1">
-            <Button
-              onClick={downloadWeddingCalendar}
-              variant="link"
-              className="min-h-11 px-0 text-xs text-primary"
-            >
-              <CalendarDays className="size-4" />
-              {t("Add to calendar")}
-            </Button>
-            <Button asChild variant="link" className="min-h-11 px-0 text-xs text-primary">
-              <a href={MAPS_SEARCH_URL} target="_blank" rel="noreferrer noopener">
-                <MapPin className="size-4" />
-                {t("Open in maps")}
-                <ArrowUpRight className="size-3.5" />
-              </a>
-            </Button>
-          </div> */}
-          {/* <p className="mt-2 text-xs leading-5 text-muted-foreground">
-            {t("Formal or traditional attire")}
-            <span className="block">{t("Outdoor ceremony, indoor reception")}</span>
-          </p> */}
-        </div>
       </div>
     </section>
   );

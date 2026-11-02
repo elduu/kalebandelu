@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { ArrowUpRight, Check } from "lucide-react";
+import { ArrowUpRight, Check, Loader2 } from "lucide-react";
 
 import storyDetail from "@/assets/story-detail.jpg";
 import { SectionLabel } from "@/components/common/SectionLabel";
@@ -8,10 +8,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
-import { MEAL_OPTIONS } from "@/data/content";
 import { useLanguage } from "@/i18n/useLanguage";
+import { apiUrl } from "@/lib/api";
 
 type Attendance = "accept" | "decline";
+
+const RSVP_API = apiUrl("rsvp");
 
 const fieldClass = "h-12 rounded-none text-base sm:text-sm";
 const choiceClass =
@@ -21,11 +23,35 @@ export function Rsvp() {
   const { t } = useLanguage();
   const [attendance, setAttendance] = useState<Attendance>("accept");
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(false);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    // TODO: send `new FormData(event.currentTarget)` to your backend / form service.
-    setSubmitted(true);
+    if (submitting) return;
+
+    const form = new FormData(event.currentTarget);
+    const payload = {
+      name: String(form.get("name") ?? "").trim(),
+      attending: attendance === "accept" ? "yes" : "no",
+      wish: String(form.get("wish") ?? "").trim(),
+    };
+
+    setSubmitting(true);
+    setError(false);
+    try {
+      const response = await fetch(RSVP_API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!response.ok) throw new Error("Request failed");
+      setSubmitted(true);
+    } catch {
+      setError(true);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -57,37 +83,13 @@ export function Rsvp() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-7">
-                <div className="grid gap-6 sm:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="guest-name">{t("Your name")}</Label>
-                    <Input
-                      id="guest-name"
-                      name="name"
-                      required
-                      placeholder={t("Full name")}
-                      className={fieldClass}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="guest-email">{t("Email address")}</Label>
-                    <Input
-                      id="guest-email"
-                      name="email"
-                      type="email"
-                      required
-                      placeholder={t("you@example.com")}
-                      className={fieldClass}
-                    />
-                  </div>
-                </div>
-
                 <div className="space-y-2">
-                  <Label htmlFor="guest-phone">{t("Phone number")}</Label>
+                  <Label htmlFor="guest-name">{t("Your name")}</Label>
                   <Input
-                    id="guest-phone"
-                    name="phone"
-                    type="tel"
-                    placeholder={t("Phone number")}
+                    id="guest-name"
+                    name="name"
+                    required
+                    placeholder={t("Full name")}
                     className={fieldClass}
                   />
                 </div>
@@ -112,54 +114,39 @@ export function Rsvp() {
                   </RadioGroup>
                 </fieldset>
 
-                {attendance === "accept" && (
-                  <>
-                    <div className="space-y-2">
-                      <Label htmlFor="party-size">{t("Number of guests")}</Label>
-                      <Input
-                        id="party-size"
-                        name="partySize"
-                        type="number"
-                        min="1"
-                        max="6"
-                        defaultValue="1"
-                        className={fieldClass}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="meal">{t("Meal preference")}</Label>
-                      <select
-                        id="meal"
-                        name="meal"
-                        className="h-11 w-full border border-input bg-background px-3 text-sm text-foreground"
-                      >
-                        <option value="">{t("Select a preference")}</option>
-                        {MEAL_OPTIONS.map((meal) => (
-                          <option key={meal} value={meal}>
-                            {t(meal)}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </>
-                )}
-
                 <div className="space-y-2">
-                  <Label htmlFor="message">{t("A note for the couple")}</Label>
+                  <Label htmlFor="wish">{t("Your wish for the couple")}</Label>
                   <Textarea
-                    id="message"
-                    name="message"
-                    placeholder={t("Share a wish or dietary requirement…")}
+                    id="wish"
+                    name="wish"
+                    required
+                    placeholder={t("Share a wish…")}
                     className="min-h-24 rounded-none text-base sm:text-sm"
                   />
                 </div>
 
+                {error && (
+                  <p className="text-sm text-destructive" role="alert">
+                    {t("Something went wrong. Please try again.")}
+                  </p>
+                )}
+
                 <Button
                   type="submit"
+                  disabled={submitting}
                   className="h-12 w-full rounded-none text-xs uppercase tracking-normal"
                 >
-                  {t("Send RSVP")}
-                  <ArrowUpRight />
+                  {submitting ? (
+                    <>
+                      <Loader2 className="animate-spin" />
+                      {t("Sending...")}
+                    </>
+                  ) : (
+                    <>
+                      {t("Send RSVP")}
+                      <ArrowUpRight />
+                    </>
+                  )}
                 </Button>
               </form>
             )}
