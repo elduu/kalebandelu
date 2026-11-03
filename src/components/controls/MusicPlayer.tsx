@@ -1,15 +1,22 @@
+import { useState, useSyncExternalStore } from "react";
 import { Music2, Pause } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { MUSIC_URL } from "@/config/event";
-import { useBackgroundMusic } from "@/hooks/useBackgroundMusic";
 import { useLanguage } from "@/i18n/useLanguage";
+import { isPlaying, pauseMusic, playMusic, subscribe } from "@/lib/music";
 
 /** Floating play/pause button for the wedding soundtrack. */
 export function MusicPlayer() {
   const { t } = useLanguage();
-  const { playing, error, toggle } = useBackgroundMusic(MUSIC_URL);
+  const playing = useSyncExternalStore(subscribe, isPlaying);
+  const [error, setError] = useState(false);
   const label = t(playing ? "Pause music" : "Play music");
+
+  async function toggle() {
+    setError(false);
+    if (isPlaying()) pauseMusic();
+    else if (!(await playMusic())) setError(true);
+  }
 
   return (
     <div className="fixed bottom-5 right-4 z-40">

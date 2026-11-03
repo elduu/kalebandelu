@@ -5,6 +5,8 @@ import { readStorage, writeStorage } from "@/lib/storage";
 import { amharic } from "./am";
 import { LanguageContext, type Language } from "./context";
 
+const reportedMissing = new Set<string>();
+
 function getInitialLanguage(): Language {
   const saved = readStorage(STORAGE_KEYS.language);
   return saved === "am" || saved === "en" ? saved : "en";
@@ -26,7 +28,19 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     () => ({
       language,
       setLanguage,
-      t: (text: string) => (language === "am" ? (amharic[text] ?? text) : text),
+      t: (text: string) => {
+        if (language !== "am") return text;
+        const translated = amharic[text];
+        if (translated === undefined) {
+          // Development only: shows which strings still need an Amharic translation.
+          if (import.meta.env.DEV && /[A-Za-z]{3}/.test(text) && !reportedMissing.has(text)) {
+            reportedMissing.add(text);
+            console.warn("[i18n] missing Amharic:", JSON.stringify(text));
+          }
+          return text;
+        }
+        return translated;
+      },
     }),
     [language, setLanguage],
   );

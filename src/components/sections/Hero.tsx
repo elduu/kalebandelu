@@ -24,7 +24,7 @@ export function Hero() {
 
       <div className="relative mx-auto flex min-h-[inherit] max-w-7xl flex-col items-center justify-end px-6 pb-12 pt-32 text-center md:justify-center md:pb-0">
         <p className="reveal-up text-[0.65rem] font-medium uppercase tracking-normal text-accent">
-          {t("Together with their families")}
+          {t("")}
         </p>
         <h1 className="reveal-up mt-5 max-w-5xl text-5xl leading-[0.95] sm:text-7xl md:text-8xl lg:text-9xl">
           {t("Kaleb")} <span className="block text-script text-accent md:inline">&</span>{" "}

@@ -11,16 +11,18 @@ export function FamilyInvitation() {
         <h2 className="text-4xl text-primary sm:text-5xl">{t("Dear Family and Friends")}</h2>
 
         <blockquote className="mt-8 text-base italic leading-7 text-muted-foreground">
-          {t("“A cord of three strands is not quickly broken.")}
+          “{t("A cord of three strands is not quickly broken.")}”
         </blockquote>
-        <p className="mt-6 font-display text-xl text-foreground">{t("ECCLESIASTES 4:12”")}</p>
+        <p className="mt-6 font-display text-xl text-foreground">{t("Ecclesiastes 4:12")}</p>
 
         <p className="mt-10 text-base leading-8 text-muted-foreground">
           {t("Together with our families, we joyfully invite you to celebrate our marriage on")}{" "}
           <strong className="font-semibold text-foreground">{t("NOV 15, 2026")}</strong>.{" "}
           {t("The ceremony will be held at")}{" "}
-          <strong className="font-semibold text-foreground">{t("Repi Full Gospel church")}</strong>,{" "}
-          {t("Addis Ababa")}.
+          <strong className="font-semibold text-foreground">
+            {t("Reppi Full Gospel Church (Kara Kore)")}
+          </strong>
+          , {t("Addis Ababa")}.
         </p>
         <p className="mt-7 text-base leading-8 text-muted-foreground">
           {t("The ceremony begins at")}{" "}

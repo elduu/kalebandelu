@@ -5,8 +5,8 @@ import eventHero from "@/assets/image_10.webp";
 import guestCelebration from "@/assets/guest-celebration.jpg";
 import storyDetail from "@/assets/story-detail.jpg";
 import { VENUE } from "@/config/event";
-import storyMet from "@/assets/image_24.webp";
-import storyStruggles from "@/assets/image_26.webp";
+import storyMet from "@/assets/image_36.webp";
+import storyStruggles from "@/assets/image_37.webp";
 import storyYes from "@/assets/image_18.webp";
 import storyShemegelna from "@/assets/image_19.webp";
 /* Every user-facing string below is an English key that is translated at render time. */
