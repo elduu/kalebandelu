@@ -181,7 +181,7 @@ function RsvpIntro() {
           </h2>
         </div>
         <p className="mt-12 max-w-xs font-display text-xl italic text-primary-foreground/85">
-          {t("We hope to celebrate with you. Please respond by July 1, 2027.")}
+          {t("We hope to celebrate with you. Please respond by nov 15, 2026.")}
         </p>
       </div>
     </div>
