@@ -11,31 +11,31 @@ type ScheduleItem = {
 
 const SCHEDULE: ScheduleItem[] = [
   {
-    time: "7:00",
+    time: "7:00 AM",
     title: "Morning Photo Session",
     detail: "Groom and bride photo session at the hotel.",
     icon: Camera,
   },
   {
-    time: "11:00",
+    time: "11:00 AM",
     title: "Lunch Program",
     detail: "Lunch with guests at the groom’s and bride’s homes.",
     icon: Utensils,
   },
   {
-    time: "2:00",
+    time: "2:00 PM",
     title: "Guests Gather",
     detail: "Guests gather and move to the bride’s house.",
     icon: Home,
   },
   {
-    time: "3:00",
+    time: "3:00 PM",
     title: "Church Ceremony",
     detail: "The wedding ceremony at the church.",
     icon: Church,
   },
   {
-    time: "6:00",
+    time: "6:00 PM",
     title: "Cake Ceremony & Photos",
     detail: "Cake ceremony and photo session at the church.",
     icon: Cake,

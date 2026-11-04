@@ -120,7 +120,7 @@ export function Wishes() {
 
       {wishes.length > 0 && (
         <>
-          {/* The list is rendered twice so the marquee loops seamlessly; the copy is hidden from AT. */}
+          {/* ───────── SCROLLING CARDS: messages are cut after 3 lines ───────── */}
           <div
             className="wishes-window mt-10 overflow-hidden py-4"
             tabIndex={0}
@@ -132,14 +132,13 @@ export function Wishes() {
                   {marqueeWishes.map((wish, index) => (
                     <article
                       key={`${wish.id}-${index}`}
-                      className={`relative h-64 w-64 shrink-0 overflow-hidden rounded-2xl border border-accent/25 bg-secondary/50 p-5 pt-7 shadow-sm sm:h-72 ${
+                      className={`relative h-44 w-64 shrink-0 overflow-hidden rounded-2xl border border-accent/25 bg-secondary/50 p-5 pt-7 shadow-sm sm:h-48 ${
                         CARD_TILTS[index % CARD_TILTS.length]
                       }`}
                     >
                       <Sticker index={index} className="absolute -right-3 -top-4" />
                       <h3 className="truncate pr-8 text-lg text-foreground">{wish.name}</h3>
-                      {/* Long messages are cut after 6 lines and end with "…" */}
-                      <p className="mt-3 line-clamp-6 whitespace-normal break-words text-sm italic leading-6 text-muted-foreground">
+                      <p className="mt-3 line-clamp-3 whitespace-normal break-words text-sm italic leading-6 text-muted-foreground">
                         “{wish.message}”
                       </p>
                     </article>
@@ -162,6 +161,7 @@ export function Wishes() {
         </>
       )}
 
+      {/* ───────── "VIEW ALL MESSAGES" WINDOW: every message in full, never cut ───────── */}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent
           closeLabel={t("Close messages")}
@@ -173,19 +173,15 @@ export function Wishes() {
           <DialogDescription>{t("From those we love")}</DialogDescription>
           <div className="divide-y divide-border">
             {wishes.map((wish, index) => (
-              <article
-  key={`${wish.id}-${index}`}
-  className={`relative h-44 w-64 shrink-0 overflow-hidden rounded-2xl border border-accent/25 bg-secondary/50 p-5 pt-7 shadow-sm sm:h-48 ${
-    CARD_TILTS[index % CARD_TILTS.length]
-  }`}
->
-  <Sticker index={index} className="absolute -right-3 -top-4" />
-  <h3 className="truncate pr-8 text-lg text-foreground">{wish.name}</h3>
-  {/* Long messages are cut after 3 lines and end with "…" */}
-  <p className="mt-3 line-clamp-3 whitespace-normal break-words text-sm italic leading-6 text-muted-foreground">
-    “{wish.message}”
-  </p>
-</article>
+              <article key={`${wish.id}-${index}`} className="flex items-start gap-4 py-6">
+                <Sticker index={index} className="shrink-0" />
+                <div className="min-w-0 flex-1">
+                  <h3 className="break-words text-xl text-primary">{wish.name}</h3>
+                  <p className="mt-2 line-clamp-none whitespace-pre-line break-words text-sm italic leading-7 text-muted-foreground">
+                    “{wish.message}”
+                  </p>
+                </div>
+              </article>
             ))}
           </div>
         </DialogContent>
