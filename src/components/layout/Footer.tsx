@@ -33,23 +33,26 @@ export function Footer() {
 
       <Heart className="mx-auto mt-7 size-4 fill-accent text-accent" aria-hidden />
 
-      <div className="mx-auto mt-8 max-w-xs border-t border-primary-foreground/15 pt-5 text-[0.7rem] text-primary-foreground/60">
-        <p>
-          {t("Made by")}{" "}
-          <a
-            href="https://inviteyours.com"
-            target="_blank"
-            rel="noreferrer noopener"
-            className="font-medium text-primary-foreground/80 hover:text-accent"
-          >
-            inviteyours.com
-          </a>
+      {/* Credit: bold and easy to notice */}
+      <div className="mx-auto mt-10 max-w-sm rounded-2xl border border-accent/60 bg-primary-foreground/5 px-6 py-6">
+        <p className="text-xs uppercase tracking-wider text-primary-foreground/70">
+          {t("Made by")}
         </p>
         <a
-          href="tel:+251909571370"
-          className="mt-1 inline-flex items-center gap-1.5 hover:text-accent"
+          href="https://inviteyours.com"
+          target="_blank"
+          rel="noreferrer noopener"
+          className="mt-1 block text-2xl font-bold tracking-wide text-accent underline-offset-4 hover:underline sm:text-3xl"
         >
-          <Phone className="size-3" aria-hidden />
+          inviteyours.com
+        </a>
+
+        <a
+          href="tel:+251909571370"
+          aria-label="0909571370"
+          className="mt-5 inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-lg font-bold tracking-wide text-accent-foreground shadow-lg transition hover:bg-accent/90 sm:text-xl"
+        >
+          <Phone className="size-5" aria-hidden />
           0909571370
         </a>
       </div>
